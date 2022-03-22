@@ -17,7 +17,19 @@ const theFact = document.getElementById("theFact");
 const theImage = document.getElementById("theImage");
 
 var factArray;
-getFacts();  // Get fact array and put it in factArray
+getFacts(); // Get fact array and put it in factArray
+var lastFact = -1;
+
+const imgArray = [
+  "./img/pexels-aleksandr-nadyojin-4492170-a.jpg",
+  "./img/pexels-anel-rossouw-2558605-a.jpg",
+  "./img/pexels-cats-coming-1543793-a.jpg",
+  "./img/pexels-danielle-daniel-479009-a.jpg",
+  "./img/pexels-flickr-156934-a.jpg",
+  "./img/pexels-francesco-ungaro-96428-a.jpg",
+  "./img/pexels-pixabay-248280-a.jpg",
+];
+var lastImg = -1;
 
 /**********\
 * getFacts *
@@ -25,9 +37,10 @@ getFacts();  // Get fact array and put it in factArray
 
 // Get fact array
 
-async function getFacts() {
-  let response = await fetch(theURL);
-  factArray = await response.json();
+function getFacts() {
+  return fetch(theURL).then((result) =>
+    result.json().then((resultArray) => (factArray = resultArray))
+  );
 }
 
 /**********\
@@ -38,23 +51,21 @@ async function getFacts() {
 
 function getFact() {
   let factIndex = Math.trunc(Math.random() * factArray.length);
-  let fact = factArray[factIndex].text;
-  theFact.innerHTML = fact;
-  switch (factIndex) {
-    case 0:
-      theImage.src = "./img/pexels-aleksandr-nadyojin-4492170-a.jpg"
-      break;
-    case 1:
-      theImage.src = "./img/pexels-anel-rossouw-2558605-a.jpg"
-      break;
-    case 2:
-      theImage.src = "./img/pexels-cats-coming-1543793-a.jpg"
-      break;
-    case 3:
-      theImage.src = "./img/pexels-danielle-daniel-479009-a.jpg"
-      break;
-    case 4:
-      theImage.src = "./img/pexels-flickr-156934-a.jpg"
-      break;
+  if (factIndex === lastFact) {
+    factIndex++;
+    if (factIndex === factArray.length) {
+      factIndex = 0;
+    }
   }
+  lastFact = factIndex;
+  theFact.innerHTML = factArray[factIndex].text;
+  let imgIndex = Math.trunc(Math.random() * imgArray.length);
+  if (imgIndex === lastImg) {
+    imgIndex++;
+    if (imgIndex === imgArray.length) {
+      imgIndex = 0;
+    }
+  }
+  lastImg = imgIndex;
+  theImage.src = imgArray[imgIndex];
 }
